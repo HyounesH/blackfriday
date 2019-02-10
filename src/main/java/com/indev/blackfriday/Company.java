@@ -1,12 +1,39 @@
 package com.indev.blackfriday;
 
+import com.indev.blackfriday.factory.StockEntryFactory;
+import com.indev.blackfriday.factory.StockProducEntryFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Company {
-    public float sells(String capsule) {
-        return 0;
+    public static  final int SELL_FIXED_QUANTITY=5;
+    public static  final double MARGIN_PRICE_EACH_SELL=1.2;
+    private Map<String,StockEntry> stockEntries=new HashMap<String, StockEntry>();
+    private StockEntryFactory stockEntryFactory=StockProducEntryFactory.getInstance();
+    private  float totalsells=0;
+    public float sells(String productName) {
+         if(checkStock(productName)) {
+             StockEntry stockEntry = stockEntries.get(productName);
+             float sells = (float) (stockEntry.getPrice() * SELL_FIXED_QUANTITY * MARGIN_PRICE_EACH_SELL);
+             this.totalsells += sells;
+             stockEntry.setQuantity(stockEntry.getQuantity() - SELL_FIXED_QUANTITY);
+             stockEntries.put(productName, stockEntry);
+             return sells;
+         }
+         else{
+             throw new RuntimeException("no stock available");
+         }
+
     }
 
-    public void stock(int i, String capsule, int i1) {
+    private boolean checkStock(String productName) {
+        StockEntry stockEntry=stockEntries.get(productName);
+        return  stockEntry.getQuantity()>=SELL_FIXED_QUANTITY;
+    }
 
+    public void stock(int quantity, String productName, int price) {
+     stockEntries.put(productName,stockEntryFactory.createEntry(quantity,productName,price));
     }
 
     public Company to(int i) {
@@ -18,10 +45,16 @@ public class Company {
     }
 
     public int totalAssets() {
-        return 20;
+        int totalAssets=0;
+        for(StockEntry stockEntry:stockEntries.values()){
+            totalAssets+=stockEntry.getPrice()*stockEntry.getQuantity();
+        }
+        totalAssets+=totalsells;
+        return  totalAssets;
     }
 
-    public Company blackFriday() {
+    public Company blackFriday()
+    {
         return this;
     }
 }

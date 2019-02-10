@@ -98,6 +98,7 @@ public class BlackFriday {
         assertThat(salePrice, is(22f));
         salePrice = company.blackFriday().sells("machine");
         assertThat(salePrice, is(1100f));
+
         assertThat(company.totalAssets(), is(1122));
     }
 }
