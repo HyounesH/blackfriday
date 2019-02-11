@@ -8,12 +8,25 @@ import java.util.Map;
 
 public class Company {
     public static  final int SELL_FIXED_QUANTITY=5;
+    public static  final int SELL_FIXED_QUANTITY_BLACK_FRIDAY=10;
     public static  final double MARGIN_PRICE_EACH_SELL=1.2;
+    public static final  double MARGIN_PRICE_EACH_SELL_BLACK_FRIDAY=1.1;
     private Map<String,StockEntry> stockEntries=new HashMap<String, StockEntry>();
     private StockEntryFactory stockEntryFactory=StockProducEntryFactory.getInstance();
     private  float totalsells=0;
+    private boolean isBlackFriday=false;
     public float sells(String productName) {
-         if(checkStock(productName)) {
+        if(isBlackFriday){
+            toogleBlackFriday();
+            StockEntry stockEntry = stockEntries.get(productName);
+            float sells = (float) (stockEntry.getPrice() * SELL_FIXED_QUANTITY_BLACK_FRIDAY * MARGIN_PRICE_EACH_SELL_BLACK_FRIDAY);
+            this.totalsells += sells;
+            stockEntry.setQuantity(stockEntry.getQuantity() - SELL_FIXED_QUANTITY_BLACK_FRIDAY);
+            stockEntries.put(productName, stockEntry);
+            return sells;
+
+        }
+         else if(checkStock(productName) && isBlackFriday==false) {
              StockEntry stockEntry = stockEntries.get(productName);
              float sells = (float) (stockEntry.getPrice() * SELL_FIXED_QUANTITY * MARGIN_PRICE_EACH_SELL);
              this.totalsells += sells;
@@ -54,7 +67,11 @@ public class Company {
     }
 
     public Company blackFriday()
-    {
+    {   toogleBlackFriday();
         return this;
+    }
+
+    public void toogleBlackFriday(){
+        isBlackFriday= true ^ isBlackFriday;
     }
 }

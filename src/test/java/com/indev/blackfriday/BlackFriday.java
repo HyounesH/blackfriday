@@ -75,11 +75,9 @@ public class BlackFriday {
         assertThat(salePrice, is(12f));
         company.sells("capsule");
     }
-
-    /*
+/*
         In Black friday the sells are 2 times higher, but the price margin is only 10%
      */
-    /*
     @Test
     public void blackFridaySellProduct() {
         Company company = new Company();
@@ -102,5 +100,4 @@ public class BlackFriday {
 
         assertThat(company.totalAssets(), is(1122));
     }
-    */
 }
