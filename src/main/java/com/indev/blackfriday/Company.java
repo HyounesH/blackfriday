@@ -16,7 +16,7 @@ public class Company {
     private  float totalsells=0;
     private boolean isBlackFriday=false;
     public float sells(String productName) {
-        if(isBlackFriday){
+        if(isBlackFriday && checkStockBlackFriday(productName)){
             toogleBlackFriday();
             StockEntry stockEntry = stockEntries.get(productName);
             float sells = (float) (stockEntry.getPrice() * SELL_FIXED_QUANTITY_BLACK_FRIDAY * MARGIN_PRICE_EACH_SELL_BLACK_FRIDAY);
@@ -44,11 +44,15 @@ public class Company {
         StockEntry stockEntry=stockEntries.get(productName);
         return  stockEntry.getQuantity()>=SELL_FIXED_QUANTITY;
     }
+    private boolean checkStockBlackFriday(String productName){
+        StockEntry stockEntry=stockEntries.get(productName);
+        return  stockEntry.getQuantity()>=SELL_FIXED_QUANTITY_BLACK_FRIDAY;
+    }
 
     public void stock(int quantity, String productName, int price) {
      stockEntries.put(productName,stockEntryFactory.createEntry(quantity,productName,price));
     }
-
+/*
     public Company to(int i) {
         return this;
     }
@@ -56,7 +60,7 @@ public class Company {
     public float computeBenefit() {
         return 0;
     }
-
+*/
     public int totalAssets() {
         int totalAssets=0;
         for(StockEntry stockEntry:stockEntries.values()){
